@@ -1,6 +1,7 @@
 import { Controller, Get, Sse } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Observable } from 'rxjs';
+import { readFileSync } from 'fs';
 
 @Controller()
 export class AppController {
@@ -23,6 +24,14 @@ export class AppController {
       setTimeout(() => {
         observer.next({ data: { msg: 'ccc' } });
       }, 5000);
+    });
+  }
+
+  @Sse('stream2')
+  stream3() {
+    return new Observable((observer) => {
+      const json = readFileSync('./package.json').toJSON();
+      observer.next({ data: { msg: json } });
     });
   }
 }
